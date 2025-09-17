@@ -1,0 +1,116 @@
+version: 2
+updates:
+  # Python dependencies (Flask app with OCR and ML)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+    reviewers:
+      - "OWNER"
+    groups:
+      flask-stack:
+        patterns:
+          - "flask"
+          - "werkzeug"
+          - "jinja2"
+          - "flask-*"
+      ocr-processing:
+        patterns:
+          - "pytesseract"
+          - "pillow"
+          - "PIL"
+          - "opencv-*"
+          - "tesseract*"
+      pdf-processing:
+        patterns:
+          - "PyPDF2"
+          - "pypdf*"
+          - "pdfplumber"
+          - "pymupdf"
+      ml-stack:
+        patterns:
+          - "scikit-learn"
+          - "sklearn"
+          - "pandas"
+          - "numpy"
+          - "joblib"
+      text-processing:
+        patterns:
+          - "nltk"
+          - "spacy"
+          - "textblob"
+          - "regex"
+      data-science:
+        patterns:
+          - "matplotlib"
+          - "seaborn"
+          - "scipy"
+      dev-tools:
+        patterns:
+          - "pytest*"
+          - "black"
+          - "flake8"
+          - "autopep8"
+    ignore:
+      - dependency-name: "flask"
+        versions: ["<2.0"]  # keep modern Flask
+      - dependency-name: "scikit-learn"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "pandas"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:15"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "ci"
+
+  # Docker (if you add containerization for deployment)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "06:30"
+      timezone: "Asia/Kolkata"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "deps"
+    ignore:
+      - dependency-name: "python"
+        versions: ["<3.8"]  # keep modern Python base images
+      - dependency-name: "ubuntu"
+        versions: ["<20.04"]  # keep recent Ubuntu base
+
+  # Requirements files (if using requirements-dev.txt or similar)
+  - package-ecosystem: "pip"
+    directory: "/requirements"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+      - "dev-tools"
+    commit-message:
+      prefix: "deps"
